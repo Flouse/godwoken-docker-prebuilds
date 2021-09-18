@@ -34,6 +34,7 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
+            ~/.cargo/bin
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
 
@@ -43,6 +44,15 @@ jobs:
         run: |
           test "$(moleculec --version)" = "Moleculec 0.6.1" \
           || CARGO_TARGET_DIR=target/ cargo install moleculec --version 0.6.1
+      - name: Install capsule
+        env:
+          CAPSULE_VERSION: v0.4.6
+        run: |
+          curl -OL https://github.com/nervosnetwork/capsule/releases/download/${CAPSULE_VERSION}/capsule_${CAPSULE_VERSION}_x86_64-linux.tar.gz \
+          && tar xf capsule_${CAPSULE_VERSION}_x86_64-linux.tar.gz \
+          && mv capsule_${CAPSULE_VERSION}_x86_64-linux/capsule ~/.cargo/bin/
+          capsule --version
+
       # - name: Install ckb-cli
       #   run: which ckb-cli || CARGO_TARGET_DIR=target/ cargo install ckb-cli --version 0.43.0
 
@@ -90,3 +100,8 @@ jobs:
           docker run --rm godwoken-prebuilds ckb-cli --version
           docker run --rm godwoken-prebuilds ckb-indexer --version
           docker run --rm godwoken-prebuilds find /scripts
+
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 30
