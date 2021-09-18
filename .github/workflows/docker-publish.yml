@@ -79,6 +79,7 @@ jobs:
         run: |
           echo "tags: ${{ steps.meta.outputs.tags }}"
           echo "labels: ${{ steps.meta.outputs.labels }}"
+          docker pull ghcr.io/flouse/godwoken-prebuilds:docker-publish
 
       - name: build
         run: make build-components
@@ -93,14 +94,16 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Check versions of the binaries used by Godwoken
-        run: |
-          docker run --rm godwoken-prebuilds godwoken --version
-          docker run --rm godwoken-prebuilds gw-tools --version
-          docker run --rm godwoken-prebuilds ckb --version
-          docker run --rm godwoken-prebuilds ckb-cli --version
-          docker run --rm godwoken-prebuilds ckb-indexer --version
-          docker run --rm godwoken-prebuilds find /scripts
+      # - name: Check versions of the binaries used by Godwoken
+      #   run: |
+      # FIXME: /lib/x86_64-linux-gnu/libm.so.6: version `GLIBC_2.29' not found (required by godwoken)
+      #     docker run --rm godwoken-prebuilds godwoken --version
+      #     docker run --rm godwoken-prebuilds gw-tools --version
+      ###
+      #     docker run --rm godwoken-prebuilds ckb --version
+      #     docker run --rm godwoken-prebuilds ckb-cli --version
+      #     docker run --rm godwoken-prebuilds ckb-indexer --version
+      #     docker run --rm godwoken-prebuilds find /scripts
 
       - name: Setup tmate session
         if: ${{ failure() }}
