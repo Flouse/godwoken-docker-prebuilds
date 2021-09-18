@@ -48,7 +48,8 @@ jobs:
         env:
           CAPSULE_VERSION: v0.4.6
         run: |
-          curl -OL https://github.com/nervosnetwork/capsule/releases/download/${CAPSULE_VERSION}/capsule_${CAPSULE_VERSION}_x86_64-linux.tar.gz \
+          which capsule \
+          || curl -OL https://github.com/nervosnetwork/capsule/releases/download/${CAPSULE_VERSION}/capsule_${CAPSULE_VERSION}_x86_64-linux.tar.gz \
           && tar xf capsule_${CAPSULE_VERSION}_x86_64-linux.tar.gz \
           && mv capsule_${CAPSULE_VERSION}_x86_64-linux/capsule ~/.cargo/bin/
           capsule --version
