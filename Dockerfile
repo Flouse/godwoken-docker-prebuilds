@@ -15,8 +15,8 @@ RUN cd /godwoken && rustup component add rustfmt && cargo build --release \
  && mkdir /ckb && mkdir /ckb-indexer \
  && cd /ckb && curl -LO https://github.com/nervosnetwork/ckb/releases/download/v0.41.0/ckb_v0.41.0_x86_64-unknown-linux-gnu.tar.gz \
     && tar xzf ckb_v0.41.0_x86_64-unknown-linux-gnu.tar.gz \
- && cd /ckb-indexer && curl -LO https://github.com/nervosnetwork/ckb-indexer/releases/download/v0.2.0/ckb-indexer-0.2.0-linux.zip \
-    && unzip ckb-indexer-0.2.0-linux.zip && tar xzf ckb-indexer-linux-x86_64.tar.gz
+ && cd /ckb-indexer && curl -LO https://github.com/nervosnetwork/ckb-indexer/releases/download/v0.2.2/ckb-indexer-0.2.2-linux.zip \
+    && unzip ckb-indexer-0.2.2-linux.zip && tar xzf ckb-indexer-linux-x86_64.tar.gz
 
 
 FROM ubuntu:21.04
