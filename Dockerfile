@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		libclang-dev \
 		libssl-dev \
  && apt-get clean \
- && cargo install moleculec --version 0.6.1 \
+ && cargo install moleculec --version 0.7.2 \
  && echo 'Finished installing Dependencies'
 
 COPY ./build/godwoken /godwoken
