@@ -7,7 +7,7 @@ POLYJUICE_REPO := https://github.com/nervosnetwork/godwoken-polyjuice.git
 CLERKB_REPO := https://github.com/nervosnetwork/clerkb.git
 
 # components tags
-GODWOKEN_REF := develop-aot-vm_v1
+GODWOKEN_REF := develop-aot-vm_v1 # https://github.com/nervosnetwork/godwoken/tree/v0.9.x
 GODWOKEN_SCRIPTS_REF := v0.8.4
 POLYJUICE_REF := generator-ahead-of-time-compilation
 CLERKB_REF := v0.4.0
