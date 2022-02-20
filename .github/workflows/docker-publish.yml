@@ -14,7 +14,6 @@ on:
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ${{ github.repository_owner != 'nervosnetwork' && 'ghcr.io/' || '' }}
-  # github.repository as <account>/<repo>
   IMAGE_NAME: godwoken-prebuilds
 
 
@@ -25,11 +24,11 @@ jobs:
       contents: read
       packages: write
     outputs:
-      image_name: ${{ env.REGISTRY }}${{ github.repository_owner == 'nervosnetwork' && 'nervos' || github.repository_owner }}/${{ env.IMAGE_NAME }}
+      image_name: ${{ steps.lowercase-image-name.outputs.lowercase_image_name }}
       image_tag: ${{ steps.meta.outputs.version }}
       meta_json: ${{ steps.meta.outputs.json }}
-      bake-file: ${{ steps.meta.outputs.bake-file }}
-      # image_digest: ${{ steps.build-push-ghcr.outputs.digest || steps.build-push-dockerhub.outputs.digest }}
+      # bake-file: ${{ steps.meta.outputs.bake-file }}
+      image_digest: ${{ steps.build-push-ghcr.outputs.digest || steps.build-push-dockerhub.outputs.digest }}
 
     steps:
       - name: Checkout repository
@@ -71,13 +70,25 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME || github.actor }}
           password: ${{ secrets.DOCKERHUB_TOKEN || secrets.GHP_CRT }}
 
+      # repository name must be lowercase
+      - name: conver image_name to lowercase
+        id: lowercase-image-name
+        env:
+          TMP_IMAGE_NAME: ${{ env.REGISTRY }}${{ github.repository_owner == 'nervosnetwork' && 'nervos' || github.repository_owner }}/${{ env.IMAGE_NAME }}
+        run: |
+          echo "TMP_IMAGE_NAME=${{ env.TMP_IMAGE_NAME }}"
+          echo "::set-output name=lowercase_image_name::$(echo ${{ env.TMP_IMAGE_NAME }} | tr '[:upper:]' '[:lower:]')"
+
+# echo "lowercase_image_name=$(echo ${{ env.TMP_IMAGE_NAME }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}${{ github.repository_owner == 'nervosnetwork' && 'nervos' || github.repository_owner }}/${{ env.IMAGE_NAME }}
+          images: ${{ steps.lowercase-image-name.outputs.lowercase_image_name }}
           # dynamically set date as a suffix
           tags: |
             type=ref,event=branch,suffix=-{{date 'YYYYMMDDHHmm'}}
@@ -121,8 +132,8 @@ jobs:
       #     docker run --rm godwoken-prebuilds ckb-indexer --version
       #     docker run --rm godwoken-prebuilds find /scripts
 
-      - name: debug-outputs
-        run: |
+      # - name: debug-outputs
+      #   run: |
 
   debug-outputs:
     needs: docker-build-push
@@ -130,8 +141,7 @@ jobs:
     steps:
     - name: print-outputs
       run: |
-        echo "docker-build-push outputs.meta_json: ${{ toJSON(needs.docker-build-push.outputs.meta_json) }}"
-        cat ${{ toJSON(needs.docker-build-push.outputs.bake-file) }}
+        echo "docker-build-push outputs: ${{ toJSON(needs.docker-build-push.outputs) }}"
       
   integration-test:
     needs: docker-build-push
