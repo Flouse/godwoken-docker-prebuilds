@@ -20,7 +20,7 @@ env:
 
 jobs:
   docker-build-push:
-    runs-on: ubuntu-latest # TODO: self-hosted-16c
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
