@@ -72,7 +72,7 @@ jobs:
           echo "record the the component's reference to the outputs of this step"
           cat versions
 
-      - name: Print the reference of components
+      - name: Print the references of components
         run: |
           echo ref.component.Godwoken=${{ steps.build.outputs.GODWOKEN_REF }}
           echo ref.component.Godwoken-scripts=${{ steps.build.outputs.GODWOKEN_SCRIPTS_REF }}
